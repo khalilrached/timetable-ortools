@@ -31,5 +31,5 @@ def constraint_4(data: TimetableData, model: cp_model.CpModel, timetable):
 
 def constraint_5(data: TimetableData, model: cp_model.CpModel, timetable):
     for h in data.get_data()['hours_r']:
-        model.AddAtMostOne(timetable[(h, c, r, t)] for t in data.get_data()[
-                           'teachers_r'] for c in data.get_data()['courses_r'] for r in data.get_data()['rooms_r'])
+        model.AddAtMostOne(timetable[(h, c, r, t)] for c in data.get_data()[
+                           'courses_r'] for r in data.get_data()['rooms_r'] for t in data.get_data()['teachers_r'])
