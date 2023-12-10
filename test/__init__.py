@@ -1,0 +1,1 @@
+from src.core.timetable_data import *
