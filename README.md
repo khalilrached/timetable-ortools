@@ -38,5 +38,14 @@ python -m pip install -r requirements.txt
 pip install -r requirements.txt 
 ```
 
+### Edit the csv file 
+
+- first Row is for teachers.
+- second row for courses.
+- third and last row for rooms.
+
 ### Start the project:
 
+```shell 
+python generate-timetable.py
+```

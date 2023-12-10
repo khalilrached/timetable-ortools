@@ -1,13 +1,16 @@
 """Example of a simple nurse scheduling problem."""
 from ortools.sat.python import cp_model
 from src.utils import TimetablePartialSolutionPrinter
-
+from src.core.timetable_data import TimetableData
 def main():
+    
+    data = TimetableData('./csv/template.csv')
+    
     # Data.
-    num_teachers = 5
-    num_rooms = 2
-    num_courses = 7
-    num_hours = 4
+    num_teachers = data.get_data()['teachers_l']
+    num_rooms = data.get_data()['rooms_l']
+    num_courses = data.get_data()['courses_l']
+    num_hours = 28
 
     all_teachers = range(num_teachers)
     all_rooms = range(num_rooms)
@@ -17,8 +20,6 @@ def main():
     # Creates the model.
     model = cp_model.CpModel()
 
-    # Creates shift variables.
-    # shifts[(n, d, s)]: nurse 'n' works shift 's' on day 'd'.
     timetable = {}
 
     for h in all_hours:
@@ -28,27 +29,29 @@ def main():
                     timetable[(h, c, r, t)] = model.NewBoolVar(
                         f"h{h}_c{c}_r{r}_t{t}")
 
-    # Each shift is assigned to exactly one nurse in the schedule period.
+    # constraint 1
     for t in all_teachers:
         for h in all_hours:
             model.AddAtMostOne(timetable[(h, c, r, t)]
                                for r in all_rooms for c in all_courses)
 
-    # Each shift is assigned to exactly one nurse in the schedule period.
+    # constraint 2
     for r in all_rooms:
         for h in all_hours:
             model.AddAtMostOne(timetable[(h, c, r, t)]
                                for t in all_teachers for c in all_courses)
 
+    # constraint 3
     for c in all_courses:
         for h in all_hours:
             model.AddAtMostOne(timetable[(h, c, r, t)]
                                for t in all_teachers for r in all_rooms)
     
+    # constraint: all courses must be studied at least once 
     for c in all_courses:
         model.AddAtLeastOne(timetable[(h, c, r, t)] for t in all_teachers for h in all_hours for r in all_rooms 
                             )
-
+    # constraint: use the maximum hours
     for h in all_hours: 
         model.AddAtLeastOne(timetable[(h, c, r, t)] for c in all_courses for r in all_rooms for t in all_teachers)
 

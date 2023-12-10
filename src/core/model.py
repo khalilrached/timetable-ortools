@@ -6,7 +6,7 @@ from typing import Callable
 
 
 class TimetableCpModel:
-    model: cp_model.CpModel = cp_model.CpModel()
+    __model: cp_model.CpModel = cp_model.CpModel()
     __timetable = {}
     __constraints = [constraint_1, constraint_2,
                      constraint_3, constraint_4, constraint_5]
@@ -14,16 +14,16 @@ class TimetableCpModel:
 
     def __init__(self, data: TimetableData) -> None:
         self.__data = data
-        self.__timetable = self.__data.create_timetable(self.model)
-        self.__apply_constraints__()
+        self.__timetable = self.__data.create_timetable(self.__model)
+        self.__apply_constraints__(self.__constraints)
         self.__solver.parameters.linearization_level = 0
         self.__solver.parameters.enumerate_all_solutions = True
         
 
-    def __apply_constraints__(self):
+    def __apply_constraints__(self, constraints):
         for constraints_function in self.__constraints:
-            constraints_function(self.__data, self.__timetable)
-
+            constraints_function(self.__data, self.__model, self.__timetable)
+    
     def solve(self):
         print(self.__data.get_data())
         solution_limit = 10
@@ -35,7 +35,7 @@ class TimetableCpModel:
             self.__data.get_data()['courses_l'],
             solution_limit
         )
-        self.__solver.Solve(self.model, solution_printer)
+        self.__solver.Solve(self.__model, solution_printer)
 
         # Statistics.
         print("\nStatistics")
