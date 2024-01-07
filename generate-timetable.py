@@ -12,7 +12,12 @@ def main():
     num_courses = data.get_data()['courses_l']
     num_hours = 28
 
-    all_teachers = range(num_teachers)
+    #num_teachers = ['teachers_l']
+    #num_rooms = ['rooms_l']
+    #num_courses = ['courses_l']
+    #num_hours = 28
+
+    all_teachers = range(num_teachers) # range(len(num_teachers))
     all_rooms = range(num_rooms)
     all_courses = range(num_courses)
     all_hours = range(num_hours)
